@@ -14,7 +14,12 @@ type Link {
   imageUrl: String
   title: String
   url: String
+  user: String
   users: [User]
+}
+
+type Mutation {
+  createLink(category: String!, description: String!, imageUrl: String!, title: String!, url: String!, user: String!): Link!
 }
 
 type PageInfo {
@@ -37,7 +42,6 @@ enum Role {
 }
 
 type User {
-  bookmarks: [Link]
   email: String
   id: String
   image: String

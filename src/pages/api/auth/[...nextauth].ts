@@ -1,16 +1,14 @@
 import NextAuth from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
-import FacebookProvider from "next-auth/providers/facebook"
-import GithubProvider from "next-auth/providers/github"
-import TwitterProvider from "next-auth/providers/twitter"
-import Auth0Provider from "next-auth/providers/auth0"
-// import AppleProvider from "next-auth/providers/apple"
-// import EmailProvider from "next-auth/providers/email"
+import GoogleProvider from "next-auth/providers/google";
+import FacebookProvider from "next-auth/providers/facebook";
+import GitHubProvider from "next-auth/providers/github";
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
+import { PrismaClient } from '../../../../node_modules/.prisma/client'
 
-// For more information on each option (and a full list of options) go to
-// https://next-auth.js.org/configuration/options
+const prisma = new PrismaClient()
+
 export default NextAuth({
-  // https://next-auth.js.org/configuration/providers/oauth
+  //adapter: PrismaAdapter(prisma),
   providers: [
     FacebookProvider({
       clientId: process.env.FACEBOOK_ID,
@@ -20,14 +18,9 @@ export default NextAuth({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
     }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
+    }),
   ],
-  theme: {
-    colorScheme: "light",
-  },
-  callbacks: {
-    async jwt({ token }) {
-      token.userRole = "admin"
-      return token
-    },
-  },
-})
+});

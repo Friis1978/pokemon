@@ -1,39 +1,67 @@
-// /pages/index.tsx
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import { gql, useQuery } from "@apollo/client";
-import { AwesomeLink } from "../components/AwesomeLink";
+import { useQuery } from "@apollo/client";
+import Card from "../components/Card";
+import Pokemon from "../components/Pokemon";
+import { useRouter } from "next/router";
+import { AllLinksQuery } from "../../graphql/queries";
 
-const AllLinksQuery = gql`
-  query allLinksQuery($first: Int, $after: String) {
-    links(first: $first, after: $after) {
-      pageInfo {
-        endCursor
-        hasNextPage
+type Query = {
+  fetchMoreResult: any;
+  links: {
+    edges: [
+      {
+        cursor: string;
+        node: any;
       }
-      edges {
-        cursor
-        node {
-          imageUrl
-          url
-          title
-          category
-          description
-          id
-        }
-      }
+    ];
+  };
+};
+
+const Home = ({ darkTheme }) => {
+  const router = useRouter();
+  const [pokemons, setPokemons] = useState([]);
+  const [links, setLinks] = useState();
+
+  useEffect(() => {
+    const refetch =
+      router.asPath.split("?")[router.asPath.split("?").length - 1];
+    console.log('re', refetch)
+    const fetchPokemons = async () => {
+      const poke = await fetch("api/pokemon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ limit: 10 /*name: 'charmander'*/ }),
+      });
+      const res = await poke.json();
+      poke && setPokemons(res.data.results);
+    };
+    fetchPokemons();
+    if (refetch === "refetch") {
+      setTimeout(() => {
+        console.log('news')
+        allLinks.refetch();
+      }, 2000);
     }
-  }
-`;
+  }, []);
 
-function Home() {
-  const { data, loading, error, fetchMore } = useQuery(AllLinksQuery, {
-    variables: { first: 2 },
+  const allLinks = useQuery(AllLinksQuery, {
+    variables: { first: 4 },
   });
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Oh no... {error.message}</p>;
+  useEffect(() => {
+    console.log("new query", allLinks.data);
+    allLinks.data && setLinks(allLinks.data);
+  }, [allLinks.loading]);
 
-  const { endCursor, hasNextPage } = data.links.pageInfo;
+  useEffect(() => {
+    console.log("new links created", allLinks.data);
+  }, [links]);
+
+  if (allLinks.loading) return <p>Loading...</p>;
+  if (allLinks.error) return <p>Oh no... {allLinks.error.message}</p>;
+
+  const { endCursor, hasNextPage } = allLinks.data.links.pageInfo;
 
   return (
     <div>
@@ -41,26 +69,40 @@ function Home() {
         <title>Awesome Links</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="container mx-auto max-w-5xl my-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {data?.links.edges.map(({ node }) => (
-            <AwesomeLink
-              title={node.title}
-              category={node.category}
-              url={node.url}
-              id={node.id}
-              description={node.description}
-              imageUrl={node.imageUrl}
-            />
+      <div className="container mx-auto max-w-6xl my-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10">
+          {pokemons &&
+            pokemons.map((pokemon) => (
+              <Pokemon
+                pokemon={pokemon}
+                key={pokemon.name}
+                darkTheme={darkTheme}
+              />
+            ))}
+          {allLinks.data?.links.edges.map(({ node }) => (
+            <div key={node.id} className="flex w-full h-full">
+              <Card
+                title={node.title}
+                category={node.category}
+                url={node.url}
+                id={node.id}
+                description={node.description}
+                imageUrl={node.imageUrl}
+                darkTheme={darkTheme}
+              />
+            </div>
           ))}
         </div>
         {hasNextPage ? (
           <button
             className="px-4 py-2 bg-blue-500 text-white rounded my-10"
             onClick={() => {
-              fetchMore({
+              allLinks.fetchMore({
                 variables: { after: endCursor },
-                updateQuery: (prevResult, { fetchMoreResult }) => {
+                updateQuery: (
+                  prevResult: Query,
+                  { fetchMoreResult }: Query
+                ) => {
                   fetchMoreResult.links.edges = [
                     ...prevResult.links.edges,
                     ...fetchMoreResult.links.edges,
@@ -80,6 +122,5 @@ function Home() {
       </div>
     </div>
   );
-}
-
+};
 export default Home;

@@ -1,4 +1,4 @@
-import { objectType, extendType, intArg, stringArg } from 'nexus'
+import { objectType, extendType, intArg, stringArg, nonNull } from 'nexus'
 import { User } from './User'
 
 export const Link = objectType({
@@ -10,6 +10,7 @@ export const Link = objectType({
     t.string('description')
     t.string('imageUrl')
     t.string('category')
+    t.string('user')
     t.list.field('users', {
       type: User,
       async resolve(_parent, _args, ctx) {
@@ -121,3 +122,47 @@ export const LinksQuery = extendType({
     })
   },
 })
+
+export const CreateLinkMutation = extendType({
+  type: 'Mutation',
+  definition(t) {
+    t.nonNull.field('createLink', {
+      type: Link,
+      args: {
+        title: nonNull(stringArg()),
+        url: nonNull(stringArg()),
+        imageUrl: nonNull(stringArg()),
+        category: nonNull(stringArg()),
+        description: nonNull(stringArg()),
+        user: nonNull(stringArg()),
+      },
+      async resolve(_parent, args, ctx) {
+        if (!args.user) {
+          throw new Error(`You need to be logged in to perform an action`)
+        }
+
+        const user = await ctx.prisma.user.findUnique({
+          where: {
+            email: args.user,
+          },
+        });
+
+        if (args.user !== user.email) {
+          throw new Error(`You are not a user yet`)
+        }
+
+        const newLink = {
+          title: args.title,
+          url: args.url,
+          imageUrl: args.imageUrl,
+          category: args.category,
+          description: args.description,
+        };
+
+        return await ctx.prisma.link.create({
+          data: newLink,
+        });
+      },
+    });
+  },
+});

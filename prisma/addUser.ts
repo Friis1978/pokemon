@@ -5,12 +5,10 @@ const prisma = new PrismaClient()
 async function main() {
   await prisma.user.create({
     data: {
-      email: "friis1978@gmail.com",
+      // Add your own email, as you will use loggin in with Next-auth
+      email: "youremail@gmail.com",
       role: "ADMIN",
     },
-  });
-  await prisma.pokemon.createMany({
-    data: pokemons,
   });
 }
 

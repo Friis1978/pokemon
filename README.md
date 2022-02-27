@@ -3,6 +3,9 @@
 Link to the design file: https://xd.adobe.com/view/a378e86b-36b5-4514-a049-f60fa55b2563-f62b/grid
 
 Link to the task descriptions: https://github.com/Wiredelta/fullstack-sample/tree/main
+
+### Extras 
+A nice feature is the pagination, where only the selected numbers of pokemons will be loaded, as moore will be added when clicking 
 ## Getting Started
 Install dependencies:
 ```bash
@@ -50,5 +53,13 @@ also push the database with the 'prisma-push' npm function.
 Notes:
 I struggled in a long time trying to solve the issues with the Prisma adapter for the login, but could solve the issues. 
 
-Then I decided to to continue with the email adapted from the session, when you login with Github,facebook or Google, but this means that the user should already be in the database from the start. This means that you have to seed your email to the database.
+Then I decided to to continue with the email adapted from the session, when you login with Github,facebook or Google, but this means that the user should already be in the database from the start. This means that you have to add your email to the database
+using the npm function 'add-prisma-user'.
+
+Mssing functionallity:
+1. See Details of pokemon
+2. Sortable by name, height and weight;
+3. Filterable by name, height range and weight range.
+4. Edit your pokemon
+5. Add image (I did not have a storage for images, for now users can only add a image url)
 

@@ -6,12 +6,16 @@ import Link from "next/link";
 import Modal from "./Modal";
 import CreatePokemon from "./CreatePokemon";
 
-const Header = ({ shiftColor, currentPath }) => {
+const Header = ({ shiftColor, currentPath, pagination }) => {
   const { data: session } = useSession();
-
+  const [selectedPagination, setSelectedPagination] = useState(10);
+  const [showPaginationSelectlist, setShowPaginationSelectlist] =
+    useState(false);
   const [darkTheme, setDarkTheme] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [path, setPath] = useState("/");
+
+  const paginationNumbers = [10, 20, 50];
 
   const handleToogle = () => {
     setDarkTheme(!darkTheme);
@@ -22,6 +26,10 @@ const Header = ({ shiftColor, currentPath }) => {
     setPath(currentPath);
   }, [currentPath]);
 
+  useEffect(() => {
+    pagination(selectedPagination);
+  }, [selectedPagination]);
+
   const CreateNew = () => {
     return (
       <Modal
@@ -30,7 +38,11 @@ const Header = ({ shiftColor, currentPath }) => {
           setShowCreate(false);
         }}
         CancelComponent={
-          <div className={`flex flex-row w-full justify-end ${darkTheme ? 'text-white':'text-dark'}`}>
+          <div
+            className={`flex flex-row w-full justify-end ${
+              darkTheme ? "text-white" : "text-dark"
+            }`}
+          >
             <button
               onClick={() => setShowCreate(false)}
               className="grid w-10 h-10 cursor-pointer rounded-full items-center justify-items-center"
@@ -41,9 +53,7 @@ const Header = ({ shiftColor, currentPath }) => {
                 height="19"
                 viewBox="0 0 19 19"
               >
-                <path
-                  d="M15.0417 5.07459L13.9255 3.95834L9.50004 8.38376L5.07462 3.95834L3.95837 5.07459L8.38379 9.50001L3.95837 13.9254L5.07462 15.0417L9.50004 10.6163L13.9255 15.0417L15.0417 13.9254L10.6163 9.50001L15.0417 5.07459Z"
-                />
+                <path d="M15.0417 5.07459L13.9255 3.95834L9.50004 8.38376L5.07462 3.95834L3.95837 5.07459L8.38379 9.50001L3.95837 13.9254L5.07462 15.0417L9.50004 10.6163L13.9255 15.0417L15.0417 13.9254L10.6163 9.50001L15.0417 5.07459Z" />
               </svg>
             </button>
           </div>
@@ -137,6 +147,70 @@ const Header = ({ shiftColor, currentPath }) => {
     );
   };
 
+  const paginationItem = (item: number) => {
+    return (
+      <li
+        onClick={() => {
+          setShowPaginationSelectlist(!showPaginationSelectlist);
+          setSelectedPagination(item);
+        }}
+      >
+        <a href="#" className="block py-2 px-4 text-sm hover:underline">
+          {`${item} results`}
+        </a>
+      </li>
+    );
+  };
+
+  const SelectPagination = () => {
+    return (
+      <div className="flex flex-col ml-5">
+        <button
+          id="dropdownNavbarLink"
+          data-dropdown-toggle="dropdownNavbar"
+          className={`flex justify-between rounded-lg items-center py-2 pl-3 pr-3 w-full font-medium  md:hover:text-primary ${
+            darkTheme ? "bg-textfield-dark" : "shadow-small"
+          }`}
+          onClick={() => {
+            setShowPaginationSelectlist(!showPaginationSelectlist);
+          }}
+        >
+          <p>{`Showing ${selectedPagination} results`}</p>
+          <svg
+            className={`stroke-current text-primary ml-10 ${
+              darkTheme ? "text-white" : "text-primary"
+            }`}
+            width="16"
+            height="16"
+            viewBox="0 0 12 12"
+            fill="none"
+          >
+            <g>
+              <path d="M11.1561 3.50122L6.42536 8.381C6.39083 8.41895 6.34912 8.4492 6.30282 8.46988C6.25651 8.49055 6.20659 8.50122 6.15613 8.50122C6.10567 8.50122 6.05574 8.49055 6.00944 8.46988C5.96313 8.4492 5.92143 8.41895 5.8869 8.381L1.15613 3.50122" />
+            </g>
+          </svg>
+        </button>
+        <div
+          id="dropdownNavbar"
+          className={`absolute top-14 z-10 w-44 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 ${
+            showPaginationSelectlist ? "" : "hidden"
+          }`}
+        >
+          <ul
+            className={`flex flex-col py-1 ${
+              darkTheme ? "bg-dark text-white" : "text-dark"
+            }`}
+            aria-labelledby="dropdownLargeButton"
+          >
+            {paginationNumbers.map((item) => {
+              return <div key={`pagi-${item}`}>{paginationItem(item)}</div>;
+            })}
+          </ul>
+        </div>
+      </div>
+    );
+  };
+
   const SelectColorView = () => {
     return (
       <div
@@ -177,66 +251,77 @@ const Header = ({ shiftColor, currentPath }) => {
     >
       {showCreate && CreateNew()}
       <div>
-        <div className="flex justify-between shadow-md max-w-6xl mx-auto px-5">
-          <Link href="/">
-            <a className="inline-flex items-center">
-              <p className="hidden md:block text-xl pl-4">Pokemons</p>
-            </a>
-          </Link>
-          {session?.user ? (
+        <div className="shadow-md px-5">
+          <div className="flex justify-between max-w-6xl mx-auto px-5">
             <div className="flex flex-row items-center">
-              <p className="mr-2">
-                <small>Signed in as</small>
-                <br />
-                <strong>{session.user.email ?? session.user.name}</strong>
-              </p>
-              {session.user.image && (
-                <span
-                  style={{ backgroundImage: `url('${session.user.image}')` }}
-                  className={"avatar"}
-                />
-              )}
-              <a
-                className={`border px-4 py-1 ml-2 my-4 rounded-md shadow-md ${darkTheme ? 'text-white border-white':'text-dark border-primary'}`}
-                href={`/api/auth/signout`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  signOut();
-                }}
-              >
-                Logout
-              </a>
+              <Link href="/">
+                <a className="inline-flex">
+                  <p className="hidden md:block text-xl pl-4">Pokemons</p>
+                </a>
+              </Link>
+              {SelectPagination()}
             </div>
-          ) : (
-            <div className="flex flex-row items-center">
-              <p>You are not signed in</p>
-              <a
-                href={`/api/auth/signin`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  signIn();
-                }}
-              >
-                <div
-                  className={`flex flex-row items-center justify-between border border-primary px-4 py-1 ml-2 my-4 rounded-md shadow-md ${`${
-                    darkTheme ? "text-white bg-primary" : "text-secondary"
-                  }`}`}
+            {session?.user ? (
+              <div className="flex flex-row items-center">
+                <p className="mr-2">
+                  <small>Signed in as</small>
+                  <br />
+                  <strong>{session.user.email ?? session.user.name}</strong>
+                </p>
+                {session.user.image && (
+                  <span
+                    style={{
+                      backgroundImage: `url('${session.user.image}')`,
+                    }}
+                    className={"avatar"}
+                  />
+                )}
+                <a
+                  className={`border px-4 py-1 ml-2 my-4 rounded-md shadow-md ${
+                    darkTheme
+                      ? "text-white border-white"
+                      : "text-dark border-primary"
+                  }`}
+                  href={`/api/auth/signout`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    signOut();
+                  }}
                 >
-                  <p className="text-sm font-semibold mr-2">Login</p>
-                  <svg
-                    className="bg-primary fill-current text-white rounded-full"
-                    width={25}
-                    height={25}
-                    viewBox="0 0 1000 1000"
+                  Logout
+                </a>
+              </div>
+            ) : (
+              <div className="flex flex-row items-center">
+                <p>You are not signed in</p>
+                <a
+                  href={`/api/auth/signin`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    signIn();
+                  }}
+                >
+                  <div
+                    className={`flex flex-row items-center justify-between border border-primary px-4 py-1 ml-2 my-4 rounded-md shadow-md ${`${
+                      darkTheme ? "text-white bg-primary" : "text-secondary"
+                    }`}`}
                   >
-                    <g>
-                      <path d="M500,10C228.8,10,10,228.8,10,500c0,271.3,218.8,490,490,490c271.3,0,490-218.8,490-490C990,228.8,771.3,10,500,10z M804.5,822C794,657.5,619,613.8,619,613.8s106.8-71.8,68.3-217c-19.3-75.3-91-131.3-189-131.3c-98,0-169.7,56-189,131.3c-38.5,145.2,68.2,217,68.2,217S202.5,652.3,192,822C109.7,739.7,57.3,626,57.3,500C57.3,255,255,57.3,500,57.3C745,57.3,942.8,255,942.8,500C942.8,626,890.2,739.7,804.5,822z" />
-                    </g>
-                  </svg>
-                </div>
-              </a>
-            </div>
-          )}
+                    <p className="text-sm font-semibold mr-2">Login</p>
+                    <svg
+                      className="bg-primary fill-current text-white rounded-full"
+                      width={25}
+                      height={25}
+                      viewBox="0 0 1000 1000"
+                    >
+                      <g>
+                        <path d="M500,10C228.8,10,10,228.8,10,500c0,271.3,218.8,490,490,490c271.3,0,490-218.8,490-490C990,228.8,771.3,10,500,10z M804.5,822C794,657.5,619,613.8,619,613.8s106.8-71.8,68.3-217c-19.3-75.3-91-131.3-189-131.3c-98,0-169.7,56-189,131.3c-38.5,145.2,68.2,217,68.2,217S202.5,652.3,192,822C109.7,739.7,57.3,626,57.3,500C57.3,255,255,57.3,500,57.3C745,57.3,942.8,255,942.8,500C942.8,626,890.2,739.7,804.5,822z" />
+                      </g>
+                    </svg>
+                  </div>
+                </a>
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex flex-row justify-between max-w-6xl mx-auto mt-2 px-10">
           <div className="flex flex-row items-center">

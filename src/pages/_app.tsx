@@ -7,18 +7,19 @@ import { client } from "../../lib/apollo";
 
 function MyApp({ Component, pageProps: { session, ...pageProps }, }) {
   const [darkTheme, setDarkTheme] = useState(false);
+  const [pagination, setPagination] = useState<number>(10);
   const [currentPath, setCurrentPath] = useState("/");
   return (
     <SessionProvider session={session}>
       <ApolloProvider client={client}>
         <Layout 
-          dark={(theme)=>{
-            console.log('theme', theme)
+          pagination={(items:number)=>{setPagination(items)}}
+          dark={(theme:boolean)=>{
             setDarkTheme(theme)
           }}
           currentPath={currentPath}
         >
-          <Component {...pageProps} darkTheme={darkTheme} currentPath={(path:string)=>{setCurrentPath(path)}}/>
+          <Component {...pageProps} darkTheme={darkTheme} pagination={pagination} currentPath={(path:string)=>{setCurrentPath(path)}}/>
         </Layout>
       </ApolloProvider>
     </SessionProvider>

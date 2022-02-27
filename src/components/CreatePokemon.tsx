@@ -4,7 +4,8 @@ import toast, { Toaster } from "react-hot-toast";
 import { useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import AccessDenied from "../components/access-denied";
-import { AllPokemonsQuery, CreatePokemonMutation } from "../../graphql/queries";
+import { AllPokemonsQuery } from "../../graphql/queries";
+import { CreatePokemonMutation } from "../../graphql/mutations";
 
 const CreatePokemon = ({ Close, darkTheme }) => {
   const {
@@ -125,7 +126,7 @@ const CreatePokemon = ({ Close, darkTheme }) => {
             className={`font-medium py-2 px-10 rounded-md hover:bg-primary ${
               darkTheme
                 ? "text-white border border-white"
-                : "text-dark border border-primary shadow-small"
+                : "text-dark border border-primary shadow-small hover:text-white"
             }`}
           >
             Create

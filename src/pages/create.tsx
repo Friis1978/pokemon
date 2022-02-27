@@ -5,7 +5,8 @@ import { useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import AccessDenied from "../components/access-denied";
 import Router from "next/router";
-import { AllPokemonsQuery, CreatePokemonMutation } from "../../graphql/queries";
+import { AllPokemonsQuery } from "../../graphql/queries";
+import { CreatePokemonMutation } from "../../graphql/mutations";
 
 export default function CreatePokemon({darkTheme}) {
   const {

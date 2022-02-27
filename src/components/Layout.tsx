@@ -1,12 +1,13 @@
 import React, {useState} from "react";
 import Header from "./Header";
 
-const Layout = ({ children, dark, currentPath }) => {
+const Layout = ({ children, dark, currentPath, pagination }) => {
   const [darkTheme, setDarkTheme] = useState(false);
   return (
     <div className={`${darkTheme ? 'bg-secondary': 'bg-white'}`}>
       <Header 
-        shiftColor={(theme)=>{
+        pagination={(items:number)=>{pagination(items)}}
+        shiftColor={(theme:boolean)=>{
             setDarkTheme(theme)
             dark(theme)
         }}

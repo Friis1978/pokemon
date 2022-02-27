@@ -163,3 +163,37 @@ export const CreatePokemonMutation = extendType({
     });
   },
 });
+
+export const DeletePokemonMutation = extendType({
+  type: 'Mutation',
+  definition(t) {
+    t.nonNull.field('deletePokemon', {
+      type: Pokemon,
+      args: {
+        id: nonNull(stringArg()),
+        user: nonNull(stringArg()),
+      },
+      async resolve(_parent, args, ctx) {
+        if (!args.user) {
+          throw new Error(`You need to be logged in to perform an action`)
+        }
+
+        const user = await ctx.prisma.user.findUnique({
+          where: {
+            email: args.user,
+          },
+        });
+
+        if (args.user !== user.email) {
+          throw new Error(`You are not a user yet`)
+        }
+
+        return await ctx.prisma.pokemon.delete({
+          where: {
+            id: args.id,
+          },
+        })
+      },
+    });
+  },
+});

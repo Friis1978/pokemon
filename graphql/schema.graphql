@@ -9,6 +9,7 @@ type Edge {
 
 type Mutation {
   createPokemon(height: String!, imageUrl: String!, name: String!, user: String!, weight: String!): Pokemon!
+  deletePokemon(id: String!, user: String!): Pokemon!
 }
 
 type PageInfo {

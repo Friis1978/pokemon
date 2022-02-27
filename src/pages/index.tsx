@@ -3,25 +3,29 @@ import Head from "next/head";
 import Pokemon from "../components/Pokemon";
 import { useRouter } from "next/router";
 
-const Home = ({ darkTheme, currentPath }) => {
+const Home = ({ darkTheme, currentPath, pagination }) => {
   const router = useRouter();
   const [pokemons, setPokemons] = useState([]);
 
   useEffect(() => {
-    console.log('reload index', router.asPath)
     currentPath(router.asPath)
-
-    const fetchPokemons = async () => {
-      const poke = await fetch("api/pokemon", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ limit: 5 /*name: 'charmander'*/ }),
-      });
-      const res = await poke.json();
-      poke && setPokemons(res.data.results);
-    };
     fetchPokemons();
   }, []);
+
+  useEffect(() => {
+    currentPath(router.asPath)
+    fetchPokemons();
+  }, [pagination]);
+
+  const fetchPokemons = async () => {
+    const poke = await fetch("api/pokemon", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ limit: pagination /*name: 'charmander'*/ }),
+    });
+    const res = await poke.json();
+    poke && setPokemons(res.data.results);
+  };
 
   return (
     <div>

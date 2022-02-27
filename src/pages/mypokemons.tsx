@@ -8,7 +8,7 @@ import { Query } from "../types/Pokemon";
 import AccessDenied from "../components/access-denied";
 import { useSession } from "next-auth/react";
 
-const MyPokemons = ({ darkTheme, currentPath }) => {
+const MyPokemons = ({ darkTheme, currentPath, pagination }) => {
   const router = useRouter();
 
   const { data: session } = useSession();
@@ -18,8 +18,13 @@ const MyPokemons = ({ darkTheme, currentPath }) => {
     currentPath(router.asPath)
   }, []);
 
+  useEffect(() => {
+    console.log(pagination)
+    allPokemons.refetch({ first: pagination })
+  }, [pagination]);
+
   const allPokemons = useQuery(AllPokemonsQuery, {
-    variables: { first: 4 },
+    variables: { first: pagination },
   });
 
   if (allPokemons.loading) return <p>Loading...</p>;
@@ -80,11 +85,7 @@ const MyPokemons = ({ darkTheme, currentPath }) => {
             more
           </button>
           
-        ) : (
-          <p className="my-10 text-center font-medium">
-            You've reached the end!{" "}
-          </p>
-        )}
+        ) : null}
         </div>
       </div>
     </>

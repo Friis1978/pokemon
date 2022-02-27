@@ -12,12 +12,13 @@ function MyApp({ Component, pageProps: { session, ...pageProps }, }) {
     <SessionProvider session={session}>
       <ApolloProvider client={client}>
         <Layout 
-          dark={()=>{
-            setDarkTheme(!darkTheme)
+          dark={(theme)=>{
+            console.log('theme', theme)
+            setDarkTheme(theme)
           }}
           currentPath={currentPath}
         >
-          <Component {...pageProps} darkTheme={()=>{darkTheme}} currentPath={(path:string)=>{setCurrentPath(path)}}/>
+          <Component {...pageProps} darkTheme={darkTheme} currentPath={(path:string)=>{setCurrentPath(path)}}/>
         </Layout>
       </ApolloProvider>
     </SessionProvider>

@@ -15,7 +15,7 @@ const Header = ({ shiftColor, currentPath }) => {
 
   const handleToogle = () => {
     setDarkTheme(!darkTheme);
-    shiftColor();
+    shiftColor(!darkTheme);
   };
 
   useEffect(() => {

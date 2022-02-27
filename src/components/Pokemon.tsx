@@ -6,15 +6,10 @@ import { Pokemon } from "../types/Pokemon";
 const Pokemon = ({ pokemon, darkTheme }) => {
   const { name } = pokemon;
   const [poke, setPoke] = useState<Pokemon>();
-  const [darkBg, setDarkBg] = useState(false);
 
   useEffect(() => {
     fetchPokemon(name);
   }, []);
-
-  useEffect(() => {
-    setDarkBg(!darkBg);
-  }, [darkTheme]);
 
   const fetchPokemon = async (name: string) => {
     const pokemons = await fetch("api/pokemon", {
@@ -25,13 +20,14 @@ const Pokemon = ({ pokemon, darkTheme }) => {
     const res = await pokemons.json();
     setPoke(res.data);
   };
+
   return (
     <>
       {poke && (
         <div
           key={poke.id}
           className={`flex flex-col max-w-md rounded-xl text-center ${
-            darkBg ? "bg-white shadow-big" : "bg-dark"
+            !darkTheme ? "bg-white shadow-big" : "bg-dark"
           } h-full justify-between`}
         >
           <div className="flex bg-primary m-5 rounded-lg items-center justify-center">

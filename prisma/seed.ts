@@ -1,6 +1,5 @@
 import pokemons from "../data/pokemons";
 import { PrismaClient } from '@prisma/client'
-
 const prisma = new PrismaClient()
 
 async function main() {
@@ -10,7 +9,6 @@ async function main() {
       role: "ADMIN",
     },
   });
-
   await prisma.pokemon.createMany({
     data: pokemons,
   });

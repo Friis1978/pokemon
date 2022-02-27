@@ -1,16 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 const Card = ({ imageUrl, name, width, height, id, darkTheme }) => {
-  
-  const [darkBg, setDarkBg] = useState(false);
-
-  useEffect(()=>{
-    //setDarkBg(!darkBg)
-    
-  },[darkTheme])
-
   return (
-    <div key={id} className={`flex flex-col max-w-md rounded-xl text-center ${darkBg ? 'bg-white shadow-big':'bg-dark'} h-full justify-between`}>
+    <div key={id} className={`flex flex-col max-w-md rounded-xl text-center ${!darkTheme ? 'bg-white shadow-big':'bg-dark'} h-full justify-between`}>
       <div className="flex bg-primary m-5 p-5 rounded-lg">
         <img src={imageUrl} />
       </div>

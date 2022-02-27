@@ -6,9 +6,9 @@ const Layout = ({ children, dark, currentPath }) => {
   return (
     <div className={`${darkTheme ? 'bg-secondary': ''} h-screen`}>
       <Header 
-        shiftColor={()=>{
-            setDarkTheme(!darkTheme)
-            dark(darkTheme)
+        shiftColor={(theme)=>{
+            setDarkTheme(theme)
+            dark(theme)
         }}
         currentPath={currentPath}
       />

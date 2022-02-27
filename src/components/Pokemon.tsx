@@ -21,8 +21,8 @@ const Pokemon = ({ pokemon, darkTheme }) => {
   };
 
   const GetAllAbilities = (poke: Pokemon) => {
-    const allAbilities = poke.abilities.map((val) => {
-      return (<p className="text-right">{val.ability.name}</p>);
+    const allAbilities = poke.abilities.map((val,i) => {
+      return (<p key={i} className="text-right">{val.ability.name}</p>);
     });
     return allAbilities
   }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import { useQuery } from "@apollo/client";
-import Card from "../components/Card";
+import MyPokemon from "../components/MyPokemon";
 import { useRouter } from "next/router";
 import { AllPokemonsQuery } from "../../graphql/queries";
 import { Query } from "../types/Pokemon";
@@ -14,12 +14,10 @@ const MyPokemons = ({ darkTheme, currentPath, pagination }) => {
   const { data: session } = useSession();
 
   useEffect(() => {
-    console.log('reload mypokemons',router.asPath)
     currentPath(router.asPath)
   }, []);
 
   useEffect(() => {
-    console.log(pagination)
     allPokemons.refetch({ first: pagination })
   }, [pagination]);
 
@@ -27,7 +25,7 @@ const MyPokemons = ({ darkTheme, currentPath, pagination }) => {
     variables: { first: pagination },
   });
 
-  if (allPokemons.loading) return <p>Loading...</p>;
+  if (allPokemons.loading) return <p className="text-xl text-center">Loading...</p>;
   if (allPokemons.error) return <p>Oh no... {allPokemons.error.message}</p>;
 
   const { endCursor, hasNextPage } = allPokemons.data.pokemons.pageInfo;
@@ -49,18 +47,19 @@ const MyPokemons = ({ darkTheme, currentPath, pagination }) => {
       </Head>
       <div className={`container mx-auto max-w-6xl my-5 ${darkTheme ? 'bg-secondary':'bg-white'}`}>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10 mx-10">
-          {allPokemons.data?.pokemons.edges.map(({ node }) => (
+          {allPokemons.data?.pokemons.edges.map(({ node }) => {
+            return(
             <div key={node.id} className="flex w-full h-full">
-              <Card
+              <MyPokemon
                 name={node.name}
-                width={node.width}
+                weight={node.weight}
                 height={node.height}
                 id={node.id}
                 imageUrl={node.imageUrl}
                 darkTheme={darkTheme}
               />
             </div>
-          ))}
+          )})}
         </div>
         <div className={`flex justify-center`}>
         {hasNextPage ? (  

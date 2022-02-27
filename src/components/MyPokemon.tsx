@@ -6,7 +6,7 @@ import { AllPokemonsQuery } from "../../graphql/queries";
 import DeletePokemon from "./DeletePokemon";
 import Modal from "./Modal";
 
-const Card = ({ imageUrl, name, width, height, id, darkTheme }) => {
+const Card = ({ imageUrl, name, weight, height, id, darkTheme }) => {
   const { data: session } = useSession();
   const [user, setUser] = useState();
   const [showDelete, setShowDelete] = useState(false);
@@ -68,7 +68,7 @@ const Card = ({ imageUrl, name, width, height, id, darkTheme }) => {
         !darkTheme ? "bg-white shadow-big" : "bg-dark"
       } h-full justify-between`}
     >
-      <div className="flex bg-primary m-5 rounded-lg items-center justify-center">
+      <div className="flex bg-primary m-5 rounded-lg items-center justify-center p-5">
         <img src={imageUrl} className="object-contain h-48 w-48" />
       </div>
       <p className="text-lg font-medium mb-7">{name.toUpperCase()}</p>
@@ -78,7 +78,7 @@ const Card = ({ imageUrl, name, width, height, id, darkTheme }) => {
       </div>
       <div className="flex flex-row justify-between text-sm px-5">
         <p className="font-semibold">Weight</p>
-        <p className="">{width}</p>
+        <p className="">{weight}</p>
       </div>
       <div className="flex bg-border-gray justify-around rounded-b-lg">
         <button className="text-primary font-semibold bg-white w-full rounded-bl-lg py-2 border-r-border-gray border-r-small hover:bg-border-gray">

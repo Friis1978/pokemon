@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const AllLinksQuery = gql`
-  query allLinksQuery($first: Int, $after: String) {
-    links(first: $first, after: $after) {
+export const AllPokemonsQuery = gql`
+  query allPokemonsQuery($first: Int, $after: String) {
+    pokemons(first: $first, after: $after) {
       pageInfo {
         endCursor
         hasNextPage
@@ -11,10 +11,9 @@ export const AllLinksQuery = gql`
         cursor
         node {
           imageUrl
-          url
-          title
-          category
-          description
+          name
+          height
+          weight
           id
         }
       }
@@ -22,28 +21,25 @@ export const AllLinksQuery = gql`
   }
 `;
 
-export const CreateLinkMutation = gql`
+export const CreatePokemonMutation = gql`
   mutation (
-    $title: String!
-    $url: String!
+    $name: String!
+    $height: String!
+    $weight: String!
     $imageUrl: String!
-    $category: String!
-    $description: String!
     $user: String!
   ) {
-    createLink(
-      title: $title
-      url: $url
+    createPokemon(
+      name: $name
+      height: $height
+      weight: $weight
       imageUrl: $imageUrl
-      category: $category
-      description: $description
       user: $user
     ) {
-      title
-      url
+      name
+      height
+      weight
       imageUrl
-      category
-      description
       user
     }
   }

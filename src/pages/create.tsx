@@ -5,7 +5,7 @@ import { useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import AccessDenied from "../components/access-denied";
 import Router from "next/router";
-import { AllLinksQuery, CreateLinkMutation } from "../../graphql/queries";
+import { AllPokemonsQuery, CreatePokemonMutation } from "../../graphql/queries";
 
 export default function ProtectedPage() {
   const {
@@ -28,26 +28,25 @@ export default function ProtectedPage() {
     fetchData();
   }, []);
 
-  const [createLink, { loading, error }] = useMutation(CreateLinkMutation, {
+  const [createPokemon, { loading, error }] = useMutation(CreatePokemonMutation, {
     onCompleted: () => { 
       Router.push('/',{ query: 'refetch'})
       reset()   
     },
     refetchQueries: [
-      AllLinksQuery,
-      'allLinksQuery'
+      AllPokemonsQuery,
+      'allPokemonsQuery'
     ]
   });
 
   const onSubmit = async (data) => {
-    const { title, url, category, description } = data;
-    const imageUrl = `https://via.placeholder.com/300`;
+    const { name, width, height, imageUrl } = data;
     const currentUser = user;
-    const variables = { title, url, category, description, imageUrl, user:currentUser };
+    const variables = { name, width, height, imageUrl, user:currentUser };
     try {
-      toast.promise(createLink({ variables }), {
-        loading: "Creating new link..",
-        success: "Link successfully created!🎉",
+      toast.promise(createPokemon({ variables }), {
+        loading: "Creating new pokemon..",
+        success: "Pokemon successfully created!🎉",
         error: `Something went wrong 😥 Please try again -  ${error}`,
       });
     } catch (error) {
@@ -71,47 +70,47 @@ export default function ProtectedPage() {
   return (
     <div className="container mx-auto max-w-md py-12">
       <Toaster />
-      <h1 className="text-3xl font-medium my-5">Create a new link</h1>
+      <h1 className="text-3xl font-medium my-5">Create a new pokemon</h1>
       <form
         className="grid grid-cols-1 gap-y-6 shadow-lg p-8 rounded-lg"
         onSubmit={handleSubmit(onSubmit)}
       >
         <label className="block">
-          <span className="text-gray-700">Title</span>
-          <input
-            placeholder="Title"
-            name="title"
-            type="text"
-            {...register("title", { required: true })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          />
-        </label>
-        <label className="block">
-          <span className="text-gray-700">Description</span>
-          <input
-            placeholder="Description"
-            {...register("description", { required: true })}
-            name="description"
-            type="text"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          />
-        </label>
-        <label className="block">
-          <span className="text-gray-700">Url</span>
-          <input
-            placeholder="https://example.com"
-            {...register("url", { required: true })}
-            name="url"
-            type="text"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-          />
-        </label>
-        <label className="block">
-          <span className="text-gray-700">Category</span>
+          <span className="text-gray-700">Name</span>
           <input
             placeholder="Name"
-            {...register("category", { required: true })}
-            name="category"
+            name="name"
+            type="text"
+            {...register("name", { required: true })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          />
+        </label>
+        <label className="block">
+          <span className="text-gray-700">Height</span>
+          <input
+            placeholder="Height"
+            {...register("height", { required: true })}
+            name="height"
+            type="text"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          />
+        </label>
+        <label className="block">
+          <span className="text-gray-700">Width</span>
+          <input
+            placeholder="Width"
+            {...register("width", { required: true })}
+            name="width"
+            type="text"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          />
+        </label>
+        <label className="block">
+          <span className="text-gray-700">Image Url</span>
+          <input
+            placeholder="https://example.com"
+            {...register("imageUrl", { required: true })}
+            name="imageUrl"
             type="text"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           />

@@ -4,22 +4,11 @@
 
 type Edge {
   cursor: String
-  node: Link
-}
-
-type Link {
-  category: String
-  description: String
-  id: String
-  imageUrl: String
-  title: String
-  url: String
-  user: String
-  users: [User]
+  node: Pokemon
 }
 
 type Mutation {
-  createLink(category: String!, description: String!, imageUrl: String!, title: String!, url: String!, user: String!): Link!
+  createPokemon(height: String!, imageUrl: String!, name: String!, user: String!, weight: String!): Pokemon!
 }
 
 type PageInfo {
@@ -27,8 +16,18 @@ type PageInfo {
   hasNextPage: Boolean
 }
 
+type Pokemon {
+  height: String
+  id: String
+  imageUrl: String
+  name: String
+  user: String
+  users: [User]
+  weight: String
+}
+
 type Query {
-  links(after: String, first: Int): Response
+  pokemons(after: String, first: Int): Response
 }
 
 type Response {

@@ -64,3 +64,15 @@ export type Pokemon = {
       }
     ];
   };
+
+  export type Query = {
+    fetchMoreResult: any;
+    pokemons: {
+      edges: [
+        {
+          cursor: string;
+          node: any;
+        }
+      ];
+    };
+  };

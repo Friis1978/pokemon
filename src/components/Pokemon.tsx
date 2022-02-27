@@ -57,30 +57,6 @@ const Pokemon = ({ pokemon, darkTheme }) => {
         </div>
       )}
     </>
-    /*
-    <div className="Card">
-      {poke ? (
-        <>
-          <span className="Card--id">#{poke.id}</span>
-          <img
-            className="Card--image"
-            src={poke.sprites.front_default}
-            alt={name}
-          />
-          <h1 className="Card--name">{name}</h1>
-          <p className="Card--details">
-            {`Height: ${poke.height}`}
-          </p>
-          <p className="Card--details">
-            {`Weight: ${poke.weight}`}
-          </p>
-          <span className="Card--details">
-            {`Types: ${poke.types.map((poke) => poke.type.name).join(", ")}`}
-          </span>
-        </>
-      ) : null}
-    </div>
-    */
   );
 };
 export default Pokemon;

@@ -7,6 +7,7 @@ import { client } from "../../lib/apollo";
 
 function MyApp({ Component, pageProps: { session, ...pageProps }, }) {
   const [darkTheme, setDarkTheme] = useState(false);
+  const [currentPath, setCurrentPath] = useState("/");
   return (
     <SessionProvider session={session}>
       <ApolloProvider client={client}>
@@ -14,8 +15,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps }, }) {
           dark={()=>{
             setDarkTheme(!darkTheme)
           }}
+          currentPath={currentPath}
         >
-          <Component {...pageProps} darkTheme={()=>{darkTheme}}/>
+          <Component {...pageProps} darkTheme={()=>{darkTheme}} currentPath={(path:string)=>{setCurrentPath(path)}}/>
         </Layout>
       </ApolloProvider>
     </SessionProvider>

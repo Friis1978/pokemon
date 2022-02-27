@@ -1,4 +1,4 @@
-import links from "../data/links";
+import pokemons from "../data/pokemons";
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
@@ -6,13 +6,13 @@ const prisma = new PrismaClient()
 async function main() {
   await prisma.user.create({
     data: {
-      email: "testemail@gmail.com",
+      email: "friis1978@gmail.com",
       role: "ADMIN",
     },
   });
 
-  await prisma.link.createMany({
-    data: links,
+  await prisma.pokemon.createMany({
+    data: pokemons,
   });
 }
 

@@ -4,8 +4,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import AccessDenied from "../components/access-denied";
-import Router from "next/router";
-import { AllLinksQuery, CreateLinkMutation } from "../../graphql/queries";
+import { AllPokemonsQuery, CreatePokemonMutation } from "../../graphql/queries";
 
 const CreatePokemon = ({ Close }) => {
     const {
@@ -28,29 +27,28 @@ const CreatePokemon = ({ Close }) => {
     fetchData();
   }, []);
 
-  const [createLink, { loading, error }] = useMutation(CreateLinkMutation, {
+  const [createPokemon, { loading, error }] = useMutation(CreatePokemonMutation, {
     onCompleted: () => { 
       reset()  
       setTimeout(() => {
         Close()
-        Router.reload()
-      }, 3000); 
+      }, 2000); 
     },
     refetchQueries: [
-      AllLinksQuery,
-      'allLinksQuery'
+      AllPokemonsQuery,
+      'allPokemonsQuery'
     ]
   });
 
   const onSubmit = async (data) => {
-    const { title, url, category, description } = data;
-    const imageUrl = `https://via.placeholder.com/300`;
+    const { name, weight, height, imageUrl } = data;
     const currentUser = user;
-    const variables = { title, url, category, description, imageUrl, user:currentUser };
+    const variables = { name, weight, height, imageUrl, user:currentUser };
+    console.log('variables', variables)
     try {
-      toast.promise(createLink({ variables }), {
-        loading: "Creating new link..",
-        success: "Link successfully created!🎉",
+      toast.promise(createPokemon({ variables }), {
+        loading: "Creating new pokemon..",
+        success: "Pokemon successfully created!🎉",
         error: `Something went wrong 😥 Please try again -  ${error}`,
       });
     } catch (error) {
@@ -82,19 +80,19 @@ const CreatePokemon = ({ Close }) => {
         <label className="block">
           <span className="inputfield-label">Pokemon Name*</span>
           <input
-            placeholder="Title"
-            name="title"
+            placeholder="Name"
+            name="name"
             type="text"
-            {...register("title", { required: true })}
+            {...register("name", { required: true })}
             className="inputfield"
           />
         </label>
         <label className="block">
           <span className="inputfield-label">Pokemon Height*</span>
           <input
-            placeholder="Description"
-            {...register("description", { required: true })}
-            name="description"
+            placeholder="Height"
+            {...register("height", { required: true })}
+            name="height"
             type="text"
             className="inputfield"
           />
@@ -103,8 +101,8 @@ const CreatePokemon = ({ Close }) => {
           <span className="inputfield-label">Pokemon Weight</span>
           <input
             placeholder="Weight"
-            {...register("category", { required: true })}
-            name="category"
+            {...register("weight", { required: true })}
+            name="weight"
             type="text"
             className="inputfield"
           />
@@ -113,8 +111,8 @@ const CreatePokemon = ({ Close }) => {
           <span className="inputfield-label">Pokemon image link*</span>
           <input
             placeholder="https://example.com"
-            {...register("url", { required: true })}
-            name="url"
+            {...register("imageUrl", { required: true })}
+            name="imageUrl"
             type="text"
             className="inputfield"
           />

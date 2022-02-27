@@ -5,9 +5,13 @@ import Card from "../components/Card";
 import { useRouter } from "next/router";
 import { AllPokemonsQuery } from "../../graphql/queries";
 import { Query } from "../types/Pokemon";
+import AccessDenied from "../components/access-denied";
+import { useSession } from "next-auth/react";
 
 const MyPokemons = ({ darkTheme, currentPath }) => {
   const router = useRouter();
+
+  const { data: session } = useSession();
 
   useEffect(() => {
     console.log('reload mypokemons',router.asPath)
@@ -23,14 +27,23 @@ const MyPokemons = ({ darkTheme, currentPath }) => {
 
   const { endCursor, hasNextPage } = allPokemons.data.pokemons.pageInfo;
 
+  // If no session exists, display access denied message
+  if (!session) {
+    return (
+      <>
+        <AccessDenied darkTheme={darkTheme} />
+      </>
+    );
+  }
+
   return (
-    <div>
+    <>
       <Head>
         <title>My Pokemons</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="container mx-auto max-w-6xl my-5">
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10">
+      <div className={`container mx-auto max-w-6xl my-5 ${darkTheme ? 'bg-secondary':'bg-white'}`}>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10 mx-10">
           {allPokemons.data?.pokemons.edges.map(({ node }) => (
             <div key={node.id} className="flex w-full h-full">
               <Card
@@ -44,9 +57,10 @@ const MyPokemons = ({ darkTheme, currentPath }) => {
             </div>
           ))}
         </div>
-        {hasNextPage ? (
+        <div className={`flex justify-center`}>
+        {hasNextPage ? (  
           <button
-            className="px-4 py-2 bg-blue-500 text-white rounded my-10"
+            className={`px-4 py-2 rounded my-10 mx-10 ${darkTheme ? 'bg-white text-primary':'bg-primary text-white'}`}
             onClick={() => {
               allPokemons.fetchMore({
                 variables: { after: endCursor },
@@ -65,13 +79,15 @@ const MyPokemons = ({ darkTheme, currentPath }) => {
           >
             more
           </button>
+          
         ) : (
           <p className="my-10 text-center font-medium">
             You've reached the end!{" "}
           </p>
         )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 export default MyPokemons;

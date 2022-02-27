@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 interface ParentCompProps {
+   darkTheme: boolean;
    Close?: any;
    resetScroll?: any;
    ref?: any;
@@ -22,12 +23,9 @@ const Modal: React.FC<ParentCompProps> = (props) => {
       Close,
       scrollTo,
       resetScroll,
-      Wide,
       CancelComponent,
-      HeaderComponent,
-      SubHeaderComponent,
       ChildComponent,
-      BackgroundImage,
+      darkTheme
    } = props;
 
    useEffect(() => {
@@ -54,7 +52,7 @@ const Modal: React.FC<ParentCompProps> = (props) => {
          >
             <div className="flex items-center justify-center min-h-screen text-center">
                <div
-                  className={`flex mx-3 align-bottom bg-white shadow-md text-left transform transition-all md:align-middle w-full my-2 rounded-xl max-w-xs`}
+                  className={`flex mx-3 align-bottom shadow-md text-left transform transition-all md:align-middle w-full my-2 rounded-xl max-w-lg ${darkTheme ? 'bg-secondary': 'bg-white'}`}
                   onClick={(e) => {
                      // do not close modal if anything inside modal content is clicked
                      e.stopPropagation();
@@ -62,7 +60,7 @@ const Modal: React.FC<ParentCompProps> = (props) => {
                >
                   <div className="flex flex-col h-full w-full">
                      {CancelComponent ? (
-                        <div className="flex flex-row w-full content-start justify-end">
+                        <div className="flex flex-row w-full content-start justify-end px-16 pt-10">
                            {CancelComponent}
                         </div>
                      ) : null}

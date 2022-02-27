@@ -7,7 +7,7 @@ import AccessDenied from "../components/access-denied";
 import Router from "next/router";
 import { AllPokemonsQuery, CreatePokemonMutation } from "../../graphql/queries";
 
-export default function ProtectedPage() {
+export default function CreatePokemon({darkTheme}) {
   const {
     register,
     handleSubmit,
@@ -61,7 +61,7 @@ export default function ProtectedPage() {
   if (!session) {
     return (
       <>
-        <AccessDenied />
+        <AccessDenied darkTheme={darkTheme} />
       </>
     );
   }

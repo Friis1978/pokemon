@@ -26,6 +26,7 @@ module.exports = {
         delete: '#B64F5E',
         'border-gray': '#F5F5F5',
         modalbackgroundgray: '#5f6065',
+        'textfield-dark': '#4B4343'
       },
       spacing: {
         'toogle-padding': '1px',

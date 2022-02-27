@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Link from "next/link";
+
+// Components
 import Modal from "./Modal";
 import CreatePokemon from "./CreatePokemon";
 
 const Header = ({ shiftColor, currentPath }) => {
-  const { data: session, status } = useSession();
-  const loading = status === "loading";
+  const { data: session } = useSession();
 
   const [darkTheme, setDarkTheme] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
@@ -19,27 +19,41 @@ const Header = ({ shiftColor, currentPath }) => {
   };
 
   useEffect(() => {
-    setPath(currentPath)
-    console.log('current link', currentPath)
+    setPath(currentPath);
   }, [currentPath]);
 
   const CreateNew = () => {
     return (
       <Modal
+        darkTheme={darkTheme}
         Close={() => {
           setShowCreate(false);
         }}
         CancelComponent={
-          <div className="flex flex-row w-full justify-end">
+          <div className={`flex flex-row w-full justify-end ${darkTheme ? 'text-white':'text-dark'}`}>
             <button
               onClick={() => setShowCreate(false)}
               className="grid w-10 h-10 cursor-pointer rounded-full items-center justify-items-center"
             >
-              <Image width={20} height={20} alt="luk" src={"/svg/close.svg"} />
+              <svg
+                className="fill-current"
+                width="19"
+                height="19"
+                viewBox="0 0 19 19"
+              >
+                <path
+                  d="M15.0417 5.07459L13.9255 3.95834L9.50004 8.38376L5.07462 3.95834L3.95837 5.07459L8.38379 9.50001L3.95837 13.9254L5.07462 15.0417L9.50004 10.6163L13.9255 15.0417L15.0417 13.9254L10.6163 9.50001L15.0417 5.07459Z"
+                />
+              </svg>
             </button>
           </div>
         }
-        ChildComponent={<CreatePokemon Close={() => setShowCreate(false)} />}
+        ChildComponent={
+          <CreatePokemon
+            Close={() => setShowCreate(false)}
+            darkTheme={darkTheme}
+          />
+        }
       />
     );
   };
@@ -47,7 +61,9 @@ const Header = ({ shiftColor, currentPath }) => {
   const CreateView = () => {
     return (
       <div
-        className="text-primary py-2 rounded-lg cursor-pointer"
+        className={`py-2 rounded-lg cursor-pointer ${
+          darkTheme ? "text-white" : "text-primary"
+        }`}
         onClick={() => setShowCreate(true)}
       >
         <a>
@@ -92,13 +108,27 @@ const Header = ({ shiftColor, currentPath }) => {
 
   const LinkView = () => {
     return (
-      <ul className="flex flex-row text-primary">
-        <li className={`ml-5 cursor-pointer ${path === '/' && 'text-secondary'}`}>
+      <ul
+        className={`flex flex-row ${darkTheme ? "text-white" : "text-primary"}`}
+      >
+        <li
+          className={`ml-5 cursor-pointer ${
+            path === "/" ? (darkTheme ? "text-gray-400" : "text-secondary") : ""
+          }`}
+        >
           <Link href="/">
             <p>{"All pokemons"}</p>
           </Link>
         </li>
-        <li className={`ml-5 cursor-pointer ${path === '/mypokemons' && 'text-secondary'}`}>
+        <li
+          className={`ml-5 cursor-pointer ${
+            path === "/mypokemons"
+              ? darkTheme
+                ? "text-gray-400"
+                : "text-secondary"
+              : ""
+          }`}
+        >
           <Link href="/mypokemons">
             <p>{"My Pokemons"}</p>
           </Link>
@@ -109,7 +139,9 @@ const Header = ({ shiftColor, currentPath }) => {
 
   const SelectColorView = () => {
     return (
-      <div className="flex flex-row items-center">
+      <div
+        className={`flex flex-row items-center ${darkTheme && "text-white"}`}
+      >
         <p>{"Light Mode"}</p>
         <label className="flex items-center cursor-pointer px-2">
           <div className="relative">
@@ -130,19 +162,25 @@ const Header = ({ shiftColor, currentPath }) => {
             ></div>
           </div>
         </label>
-        <p className="text-gray-400">{"Dark Mode"}</p>
+        <p className={`-mr-4 ${darkTheme ? "text-white" : "text-gray-400"}`}>
+          {"Dark Mode"}
+        </p>
       </div>
     );
   };
 
   return (
-    <nav className={`fixed top-0 w-full z-10 bg-white text-sm ${darkTheme && "bg-secondary"}`}>
+    <nav
+      className={`fixed top-0 w-full z-10 text-sm ${
+        darkTheme ? "bg-secondary text-white" : "bg-white"
+      }`}
+    >
       {showCreate && CreateNew()}
       <div>
-        <div className="flex justify-between shadow-md px-20">
+        <div className="flex justify-between shadow-md max-w-6xl mx-auto px-5">
           <Link href="/">
             <a className="inline-flex items-center">
-              <p className="hidden md:block text-xl">Pokemons</p>
+              <p className="hidden md:block text-xl pl-4">Pokemons</p>
             </a>
           </Link>
           {session?.user ? (
@@ -159,7 +197,7 @@ const Header = ({ shiftColor, currentPath }) => {
                 />
               )}
               <a
-                className="text-secondary border border-primary px-4 py-1 ml-2 my-4 rounded-md shadow-md"
+                className={`border px-4 py-1 ml-2 my-4 rounded-md shadow-md ${darkTheme ? 'text-white border-white':'text-dark border-primary'}`}
                 href={`/api/auth/signout`}
                 onClick={(e) => {
                   e.preventDefault();
@@ -179,7 +217,11 @@ const Header = ({ shiftColor, currentPath }) => {
                   signIn();
                 }}
               >
-                <div className="flex flex-row items-center justify-between text-secondary border border-primary px-4 py-1 ml-2 my-4 rounded-md shadow-md">
+                <div
+                  className={`flex flex-row items-center justify-between border border-primary px-4 py-1 ml-2 my-4 rounded-md shadow-md ${`${
+                    darkTheme ? "text-white bg-primary" : "text-secondary"
+                  }`}`}
+                >
                   <p className="text-sm font-semibold mr-2">Login</p>
                   <svg
                     className="bg-primary fill-current text-white rounded-full"
@@ -196,7 +238,7 @@ const Header = ({ shiftColor, currentPath }) => {
             </div>
           )}
         </div>
-        <div className="flex flex-row justify-between max-w-6xl mx-auto">
+        <div className="flex flex-row justify-between max-w-6xl mx-auto mt-2 px-10">
           <div className="flex flex-row items-center">
             {session && CreateView()}
             {session && LinkView()}
